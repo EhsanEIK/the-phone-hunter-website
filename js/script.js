@@ -28,8 +28,10 @@ const showPhones = (phones) => {
 loadPhones();
 
 // search option by name
-document.getElementById('btn-search').addEventListener('click', function () {
-    const searchInputField = document.getElementById('search-input-field');
-    const searchValue = searchInputField.value;
-    loadPhones(searchValue);
+document.getElementById('search-input-field').addEventListener('keyup', function (event) {
+    if (event.key == 'Enter') {
+        const searchInputField = document.getElementById('search-input-field');
+        const searchValue = searchInputField.value;
+        loadPhones(searchValue);
+    }
 })
