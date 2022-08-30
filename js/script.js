@@ -35,6 +35,7 @@ const showPhones = (phones, dataLimit) => {
             <div class="card-body">
                 <h5 class="card-title">${phone.phone_name}</h5>
                 <p class="card-text">Brand: ${phone.brand}</p>
+                <button onclick="loadPhoneDetails('${phone.slug}')" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#phoneDetailsModal">Get Details</button>
             </div>
         </div>
         `;
@@ -46,25 +47,23 @@ const showPhones = (phones, dataLimit) => {
 
 loadPhones('iphone');
 
-// search option by name
-document.getElementById('search-input-field').addEventListener('keyup', function (event) {
-    if (event.key == 'Enter') {
-        const searchInputField = document.getElementById('search-input-field');
-        const searchValue = searchInputField.value;
-        loadPhones(searchValue);
-    }
-})
 
 const processFunction = (dataLimit) => {
     // start loader
     toggleSpinner(true);
-
     const searchInputField = document.getElementById('search-input-field');
     const searchValue = searchInputField.value;
     loadPhones(searchValue, dataLimit);
 }
 
-// search option by name [search button]
+// search option by name [search by input field]
+document.getElementById('search-input-field').addEventListener('keyup', function (event) {
+    if (event.key == 'Enter') {
+        processFunction(10);
+    }
+})
+
+// search option by name [search by button]
 document.getElementById('btn-search').addEventListener('click', function (event) {
     processFunction(10);
 })
@@ -83,4 +82,28 @@ const toggleSpinner = isLoading => {
     else {
         loader.classList.add('d-none');
     }
+}
+
+//  show phone details
+const loadPhoneDetails = (id) => {
+    const url = `https://openapi.programming-hero.com/api/phone/${id}`;
+    fetch(url)
+        .then(res => res.json())
+        .then(data => showPhoneDetails(data.data));
+}
+
+const showPhoneDetails = (phone) => {
+    const phoneDetailsTitle = document.getElementById('phoneDetailsModalLabel');
+    phoneDetailsTitle.innerText = phone.name;
+
+    const phoneDetailsBody = document.getElementById('phone-details');
+    phoneDetailsBody.innerHTML = `
+    <p>Brand: ${phone.brand}</p>
+    <p>Display: ${phone.mainFeatures.displaySize}</p>
+    <p>Memory: ${phone.mainFeatures.memory}</p>
+    <p>BLuetooth: ${phone.others.Bluetooth ? phone.others.Bluetooth : 'No'}</p>
+    <p>Radio: ${phone.others.Radio}</p>
+    <p>WLAN: ${phone.others.WLAN}</p>
+    <p>Release Date: ${phone.releaseDate ? phone.releaseDate : 'Not Published Yet'}</p>
+    `;
 }
