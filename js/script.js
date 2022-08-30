@@ -33,15 +33,31 @@ const showPhones = (phones) => {
         `;
         phonesContainer.appendChild(div);
     });
+    // stop loader
+    toggleSpinner(false);
 }
 
 loadPhones('iphone');
 
 // search option by name
 document.getElementById('search-input-field').addEventListener('keyup', function (event) {
+    // start loader
+    toggleSpinner(true);
+
     if (event.key == 'Enter') {
         const searchInputField = document.getElementById('search-input-field');
         const searchValue = searchInputField.value;
         loadPhones(searchValue);
     }
 })
+
+// function for loader/spinner
+const toggleSpinner = isLoading => {
+    const loader = document.getElementById('loader');
+    if (isLoading) {
+        loader.classList.remove('d-none');
+    }
+    else {
+        loader.classList.add('d-none');
+    }
+}
